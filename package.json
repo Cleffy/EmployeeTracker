@@ -1,0 +1,28 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "Manage the departments, roles, and employees within a company",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cleffy/EmployeeTracker.git"
+  },
+  "keywords": [
+    "Employee",
+    "Tracker"
+  ],
+  "author": "Kevin Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Cleffy/EmployeeTracker/issues"
+  },
+  "homepage": "https://github.com/Cleffy/EmployeeTracker#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.6.0"
+  }
+}
