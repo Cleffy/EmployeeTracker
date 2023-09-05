@@ -1,7 +1,6 @@
 
 const express = require('express');     // Require express
-const mysql = require('mysql2');        // Require mysql2
-const dotenv = require('dotenv');       // Require dotenv
+const routes = require('./routes');     // Require routes folder
 
 const PORT = process.env.PORT || 3001;  // Create port
 const app = express();                  // Initialize express
@@ -10,19 +9,11 @@ const app = express();                  // Initialize express
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Connect to a database
-const db = mysql.createConnection(
-    {
-        host: 'localhost',
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME
-    }
-);
-
 /**
  *      ROUTES
  */
+
+app.use(routes);
 
 // View all departments
 // View the total utilized budget of a department
