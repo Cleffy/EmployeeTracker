@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const connection = require('./database').databaseConnection;
+const connection = require('../database').databaseConnection;
 
 /**
  * View all roles
  */
-router.get('/roles', (request, response) => {
+router.get('/', (request, response) => {
     let sql = 'SELECT * FROM roles';
 
     connection.query(sql, (error, result) => {
@@ -20,7 +20,7 @@ router.get('/roles', (request, response) => {
 /**
  * Add a role
  */
-router.post('/roles', (request, response) => {
+router.post('/', (request, response) => {
     let sql = 
         'INSERT INTO roles (title, salary, department_id)' +
         `VALUES (
@@ -42,7 +42,7 @@ router.post('/roles', (request, response) => {
 /**
  * Delete a role
  */
-router.delete('/roles/:id', (request, response) => {
+router.delete('/:id', (request, response) => {
     let sql = 
         'DELETE FROM employees' +
         `WHERE id = ${request.params.id}`;

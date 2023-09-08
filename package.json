@@ -4,7 +4,9 @@
   "description": "Manage the departments, roles, and employees within a company",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "tracker": "node index.js"
   },
   "repository": {
     "type": "git",

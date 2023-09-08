@@ -1,6 +1,7 @@
 
 const express = require('express');     // Require express
 const routes = require('./routes');     // Require routes folder
+require('dotenv').config();
 
 const PORT = process.env.PORT || 3001;  // Create port
 const app = express();                  // Initialize express

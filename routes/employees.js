@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const connection = require('./database').databaseConnection;
+const connection = require('../database').databaseConnection;
 
 /**
  * View all employees
  */
-router.get('/employees', (request, response) => {
+router.get('/', (request, response) => {
     let sql = 'SELECT * FROM employees';
 
     connection.query(sql, (error, result) => {
@@ -20,7 +20,7 @@ router.get('/employees', (request, response) => {
 /**
  * View employees by manager
  */
-router.get('/employees/:id', (request, response) => {
+router.get('/:id', (request, response) => {
     let sql = 'SELECT * FROM employees' +
         `WHERE manager_id = ${request.params.id}`;
 
@@ -37,7 +37,7 @@ router.get('/employees/:id', (request, response) => {
 /**
 * Add an employee
 */
-router.post('/roles', (request, response) => {
+router.post('/', (request, response) => {
     let sql = 
         'INSERT INTO employees (first_name, last_name, role_id, manager_id)' +
         `VALUES (
@@ -59,7 +59,7 @@ router.post('/roles', (request, response) => {
 /**
  * Update an employee
  */
-router.put('/roles/:id', (request, response) => {
+router.put('/:id', (request, response) => {
     let sql = 
         'UPDATE employees' +
         `SET 
@@ -82,7 +82,7 @@ router.put('/roles/:id', (request, response) => {
 /**
  * Update an employee's manager
  */
-router.put('/roles/:id&:manager_id', (request, response) => {
+router.put('/:id&:manager_id', (request, response) => {
     let sql = 
         'UPDATE employees' +
         `SET manager_id = ${request.params.manager_id})` +
@@ -101,7 +101,7 @@ router.put('/roles/:id&:manager_id', (request, response) => {
 /**
  * Delete an employee
  */
-router.delete('/employees/:id', (request, response) => {
+router.delete('/:id', (request, response) => {
     let sql = 
         'DELETE FROM employees' +
         `WHERE id = ${request.params.id}`;

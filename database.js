@@ -20,4 +20,4 @@ db.connect((error => {
 }));
 
 // Export database connection
-exports.databaseConnection = connection;
+exports.databaseConnection = db;
