@@ -9,27 +9,8 @@ const app = express();                  // Initialize express
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-/**
- *      ROUTES
- */
-
+// Routes
 app.use(routes);
-
-// View all departments
-// View the total utilized budget of a department
-// Add a department
-// Delete a department
-
-// View all roles
-// Add a role
-// Delete a role
-
-// View all employees
-// View employees by manager
-// Add an employee
-// Update an employee
-// Update an employee's manager
-// Delete an employee
 
 // Create route for unspecified request
 app.use((req, res) => {
