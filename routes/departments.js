@@ -4,7 +4,8 @@ const {
     getDepartment,
     getSalaryBudget, 
     createDepartment,
-    deleteDepartment } = require('../controller/departments');
+    deleteDepartment, 
+    updateDepartment} = require('../controller/departments');
 
 /**
  * View all departments
@@ -82,13 +83,13 @@ router.post('/:name', async (request, response) => {
  * @param {INT} id -ID of the department
  * @body JSON Object
  * {
- *  name: {STRING}
+ *  "name": {STRING}
  * }
  */
 router.put('/:id', async (request, response) => {
     try{
         const {name} = request.body;
-        const result = await updateRole(name, request.params.id);
+        const result = await updateDepartment(name, request.params.id);
         if(!result){
             response.status(400).json({ message: `Unable to update department ${request.params.id}.` });
             return;

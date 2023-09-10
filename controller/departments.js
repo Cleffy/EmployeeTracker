@@ -49,10 +49,10 @@ async function getDepartment(id){
 async function getSalaryBudget(id){
     try{
         const [result] = await dataPool.query(`
-            SELECT COUNT(roles.salary) AS total_salary
+            SELECT SUM(salary) AS total_salary
             FROM employees
             JOIN roles
-            ON roles.id = employees.role_id
+            ON employees.role_id = roles.id
             WHERE roles.department_id = ?
             ;`, [id]);
         console.log(result);
@@ -72,7 +72,7 @@ async function getSalaryBudget(id){
  */
 async function createDepartment(name){
     try{
-        const [result] = await db.query(`
+        const [result] = await dataPool.query(`
             INSERT INTO departments (department_name)
             VALUES (?)
             ;`, [name]);
@@ -96,21 +96,20 @@ async function createDepartment(name){
  */
 async function updateDepartment(name, id){
     try{
-        if(name = undefined){
+        if(name === undefined){
             console.log('No department name defined.');
             return;
         }
-        if(id = undefined){
+        if(id === undefined){
             console.log('No department id defined.');
             return;
         }
-        const [result] = await db.query(`
+        const [result] = await dataPool.query(`
             UPDATE departments
-            SET
-                department_name = ?
+            SET department_name = "?"
             WHERE id = ?
             ;`, [name, id]);
-        const updatedObject = getDepartment(result.insertId);
+        const updatedObject = await getDepartment(id);
         console.log(updatedObject);
         return updatedObject;
     }
@@ -133,7 +132,7 @@ async function deleteDepartment(id){
             console.log('Unable to get department');
             return;
         }
-        await db.query(`
+        await dataPool.query(`
             DELETE FROM departments
             WHERE id = ?
             ;`, [id]);

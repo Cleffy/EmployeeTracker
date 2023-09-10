@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 require('dotenv').config();
+const URL = `http://${process.env.DB_HOST}:${process.env.PORT}`;
 
 console.log(
     '////////////////////\n' +
@@ -94,7 +95,7 @@ async function selectDepartmentTask(){
     ]);
 }
 async function getAllDepartments(){
-    return await fetch(process.env.URL + '/departments', {method: 'GET'});
+    return await fetch(URL + '/departments', {method: 'GET'});
 }
 async function addDepartment(){
     let newDepartment = await inquirer.prompt([
@@ -117,7 +118,7 @@ async function addDepartment(){
         await addDepartment();
     }
     else{
-        fetch(process.env.URL + `/departments/${department_name}`, {
+        fetch(URL + `/departments/${department_name}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

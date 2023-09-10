@@ -49,7 +49,7 @@ async function getRole(id){
  */
 async function createRole(title, salary, department_id){
     try{
-        const [result] = await db.query(`
+        const [result] = await dataPool.query(`
             INSERT INTO roles (title, salary, department_id)
             VALUES (?, ?, ?)
             ;`, [title, salary, department_id]);
@@ -89,7 +89,7 @@ async function updateRole(title, salary, department_id, id){
         if(department_id = undefined){
             department_id = role.department_id;
         }
-        const [result] = await db.query(`
+        const [result] = await dataPool.query(`
             UPDATE roles
             SET
                 title = ?,
@@ -120,7 +120,7 @@ async function deleteRole(id){
             console.log('Unable to get role');
             return;
         }
-        await db.query(`
+        await dataPool.query(`
             DELETE FROM roles
             WHERE id = ?
             ;`, [id]);

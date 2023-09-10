@@ -72,7 +72,7 @@ async function getManagersEmployees(id){
  */
 async function createEmployee(first_name, last_name, role_id, manager_id){
     try{
-        const [result] = await db.query(`
+        const [result] = await dataPool.query(`
             INSERT INTO employees (first_name, last_name, role_id, manager_id)
             VALUES (?, ?, ?, ?)
             ;`, [first_name, last_name, role_id, manager_id]);
@@ -116,7 +116,7 @@ async function updateEmployee(first_name, last_name, role_id, manager_id, id){
         if(manager_id = undefined){
             manager_id = employee.manager_id;
         }
-        const [result] = await db.query(`
+        const [result] = await dataPool.query(`
             UPDATE employees
             SET
                 first_name = ?,
@@ -148,7 +148,7 @@ async function deleteEmployee(id){
             console.log('Unable to get employee');
             return;
         }
-        await db.query(`
+        await dataPool.query(`
             DELETE FROM employees
             WHERE id = ?
             ;`, [id]);

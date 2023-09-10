@@ -4,7 +4,7 @@ https://expressjs.com/
 
 https://www.npmjs.com/package//inquirer
 
-w3schools
+https://www.w3schools.com/nodejs/
 
 https://www.youtube.com/watch?v=Hej48pi_lOc
 
