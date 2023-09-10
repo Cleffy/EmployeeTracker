@@ -106,7 +106,7 @@ async function updateDepartment(name, id){
         }
         await dataPool.query(`
             UPDATE departments
-            SET department_name = "?"
+            SET department_name = ?
             WHERE id = ?
             ;`, [name, id]);
         const updatedObject = await getDepartment(id);
