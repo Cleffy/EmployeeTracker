@@ -24,7 +24,7 @@ async function stateControl(){
             state = await displayMainMenu();
             break;
         
-        // Department Cases
+        // Department States
         case 1:
             state = await displayDepartmentMenu();
             break;

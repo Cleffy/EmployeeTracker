@@ -119,8 +119,8 @@ async function updateEmployee(first_name, last_name, role_id, manager_id, id){
         await dataPool.query(`
             UPDATE employees
             SET
-                first_name = "?",
-                last_name = "?",
+                first_name = ?,
+                last_name = ?,
                 role_id = ?,
                 manager_id = ?
             WHERE id = ?

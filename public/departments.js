@@ -282,8 +282,9 @@ async function getName(){
         {
             type: 'input',
             name: 'name',
-            message: "What's the name of the new department?\n" +
-            "**Must be between 3 to 30 characters.**"
+            message: 
+                "What's the name of the new department?\n" +
+                "** Must be between 3 to 30 characters. **"
         }
     ]);
     let name = result.name;
