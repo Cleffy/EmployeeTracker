@@ -1,120 +1,132 @@
 const router = require('express').Router();
-const connection = require('../database').databaseConnection;
+const {
+    getAllEmployees,
+    getEmployee,
+    getManagersEmployees,
+    createEmployee,
+    updateEmployee,
+    deleteEmployee } = require('../controller/employees')
 
 /**
  * View all employees
  */
-router.get('/', (request, response) => {
-    let sql = 'SELECT * FROM employees';
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to get all employees'});
+router.get('/', async (request, response) => {
+    try{
+        const result = await getAllEmployees();
+        if(!result){
+            response.status(400).json({ message: 'Unable to retrieve employees.' });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: 'Returned all employees' });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
- 
+
 /**
- * View employees by manager
+ * View an employee
+ * @param {INT} - ID of the employee
  */
-router.get('/:id', (request, response) => {
-    let sql = 'SELECT * FROM employees' +
-        `WHERE manager_id = ${request.params.id}`;
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: "Failed to get all of this manager's employees"});
+router.get('/:id', async (request, response) => {
+    try{
+        const result = await getEmployee(request.params.id);
+        if(!result){
+            response.status(400).json({ message: 'Unable to retrieve employee.' });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: "Returned all of this manager's employees" });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
 
 /**
-* Add an employee
-*/
-router.post('/', (request, response) => {
-    let sql = 
-        'INSERT INTO employees (first_name, last_name, role_id, manager_id)' +
-        `VALUES (
-            ${request.body.first_name}, 
-            ${request.body.last_name}, 
-            ${request.body.role_id},
-            ${request.body.manager_id})`;
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to add a new employee.' });
+ * View all employees under a manager
+ * @param {INT} - ID of the manager
+ */
+router.get('/manager/:id', async (request, response) => {
+    try{
+        const result = await getManagersEmployees(request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to retrieve employees under manager ${request.params.id}.` });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: 'Created a new employee.' });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
+});
+
+/**
+ * Add an employee
+ * @body JSON Object
+ * {
+ *  first_name: {STRING}
+ *  last_name: {STRING}
+ *  role_id: {INT}
+ *  manager_id: {INT}
+ * }
+ */
+router.post('/', async (request, response) => {
+    try{
+        const {first_name, last_name, role_id, manager_id} = request.body;
+        const result = await createEmployee(first_name, last_name, role_id, manager_id);
+        if(!result){
+            response.status(400).json({ message: `Unable to add employee ${first_name}, ${last_name}.` });
+            return;
+        }
+        response.status(201).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
 
 /**
  * Update an employee
+ * @param {INT} id -ID of the employee
+ * @body JSON Object
+ * {
+ *  first_name: {STRING}
+ *  last_name: {STRING}
+ *  role_id: {INT}
+ *  manager_id: {INT}
+ * }
  */
-router.put('/:id', (request, response) => {
-    let sql = 
-        'UPDATE employees' +
-        `SET 
-            first_name = ${request.body.first_name}, 
-            last_name = ${request.body.last_name}, 
-            role_id = ${request.body.role_id},
-            manager_id = ${request.body.manager_id})` +
-        `WHERE id = ${request.params.id}`;
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to update an employee.' });
+router.put('/:id', async (request, response) => {
+    try{
+        const {first_name, last_name, role_id, manager_id} = request.body;
+        const result = await updateEmployee(first_name, last_name, role_id, manager_id, request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to update employee ${request.params.id}.` });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: 'Updated an employee.' });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
 
 /**
- * Update an employee's manager
+ * Delete a employee
+ * @param {INT} id - ID of the employee
  */
-router.put('/:id&:manager_id', (request, response) => {
-    let sql = 
-        'UPDATE employees' +
-        `SET manager_id = ${request.params.manager_id})` +
-        `WHERE id = ${request.params.id}`;
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: "Failed to update an employee's manager." });
+router.delete('/:id', async (request, response) => {
+    try{
+        const result = await deleteEmployee(request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to delete employee ${request.params.id}.` });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: "Updated an employee's manager." });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
-
-/**
- * Delete an employee
- */
-router.delete('/:id', (request, response) => {
-    let sql = 
-        'DELETE FROM employees' +
-        `WHERE id = ${request.params.id}`;
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to delete an employee.' });
-        }
-        console.log(result);
-        response.status(200).send({ message: 'Deleted an employee.' });
-    });
-});
-
 
 module.exports = router;

@@ -3,6 +3,7 @@ const {
     getAllRoles,
     getRole,
     createRole,
+    updateRole,
     deleteRole } = require('../controller/roles')
 
 /**
@@ -58,6 +59,31 @@ router.post('/', async (request, response) => {
             return;
         }
         response.status(201).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
+});
+
+/**
+ * Update a role
+ * @param {INT} id -ID of the role
+ * @body JSON Object
+ * {
+ *  title: {STRING}
+ *  salary: {DECIMAL}
+ *  department_id: {INT}
+ * }
+ */
+router.put('/:id', async (request, response) => {
+    try{
+        const {title, salary, department_id} = request.body;
+        const result = await updateRole(title, salary, department_id, request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to update role ${request.params.id}.` });
+            return;
+        }
+        response.status(200).json(result);
     }
     catch(error){
         response.status(500).json(error);

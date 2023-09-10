@@ -78,6 +78,29 @@ router.post('/:name', async (request, response) => {
 });
 
 /**
+ * Update a department
+ * @param {INT} id -ID of the department
+ * @body JSON Object
+ * {
+ *  name: {STRING}
+ * }
+ */
+router.put('/:id', async (request, response) => {
+    try{
+        const {name} = request.body;
+        const result = await updateRole(name, request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to update department ${request.params.id}.` });
+            return;
+        }
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
+});
+
+/**
  * Delete a department
  * @param {INT} id - ID of the department
  */

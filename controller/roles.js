@@ -50,7 +50,7 @@ async function getRole(id){
 async function createRole(title, salary, department_id){
     try{
         const [result] = await db.query(`
-            INSERT INTO departments (title, salary, department_id)
+            INSERT INTO roles (title, salary, department_id)
             VALUES (?, ?, ?)
             ;`, [title, salary, department_id]);
         const createdObject = getRole(result.insertId);
@@ -60,7 +60,50 @@ async function createRole(title, salary, department_id){
     catch(error){
         console.error(error);
     }
+}
 
+/**
+ * updateRole
+ * @param {STRING} title - Title of the role
+ * @param {DECIMAL} salary - Salary of the role
+ * @param {INT} department_id - ID of the department for the Role
+ * @param {INT} id - Role's id
+ * @returns - The updated role
+ * 
+ * Checks to see which values are passed.
+ * Updates the mySQL pool for a role.
+ */
+async function updateRole(title, salary, department_id, id){
+    try{
+        if(id = undefined){
+            console.log('No role id defined.');
+            return;
+        }
+        const role = getRole(id);
+        if(title = undefined){
+            title = role.title;
+        }
+        if(salary = undefined){
+            salary = role.salary;
+        }
+        if(department_id = undefined){
+            department_id = role.department_id;
+        }
+        const [result] = await db.query(`
+            UPDATE roles
+            SET
+                title = ?,
+                salary = ?,
+                department_id = ?,
+            WHERE id = ?
+            ;`, [title, salary, department_id, id]);
+        const updatedObject = getRole(result.insertId);
+        console.log(updatedObject);
+        return updatedObject;
+    }
+    catch(error){
+        console.error(error);
+    }
 }
 
 /**
@@ -72,7 +115,7 @@ async function createRole(title, salary, department_id){
  */
 async function deleteRole(id){
     try{
-        const deletedObject = getDepartment(id);
+        const deletedObject = getRole(id);
         if(!deletedObject){
             console.log('Unable to get role');
             return;
@@ -89,4 +132,4 @@ async function deleteRole(id){
     }
 }
 
-module.exports = { getAllRoles, getRole, createRole, deleteRole };
+module.exports = { getAllRoles, getRole, createRole, updateRole, deleteRole };

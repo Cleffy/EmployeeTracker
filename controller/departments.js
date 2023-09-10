@@ -86,6 +86,40 @@ async function createDepartment(name){
 }
 
 /**
+ * updateDepartment
+ * @param {STRING} name - Name of the department
+ * @param {INT} id - Department's id
+ * @returns - The updated department
+ * 
+ * Checks to see if a value is passed.
+ * Updates the mySQL pool for a department.
+ */
+async function updateDepartment(name, id){
+    try{
+        if(name = undefined){
+            console.log('No department name defined.');
+            return;
+        }
+        if(id = undefined){
+            console.log('No department id defined.');
+            return;
+        }
+        const [result] = await db.query(`
+            UPDATE departments
+            SET
+                department_name = ?
+            WHERE id = ?
+            ;`, [name, id]);
+        const updatedObject = getDepartment(result.insertId);
+        console.log(updatedObject);
+        return updatedObject;
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+
+/**
  * deleteDepartment
  * @param {INT} id - ID of the department
  * @returns - The deleted department
@@ -111,4 +145,4 @@ async function deleteDepartment(id){
     }
 }
 
-module.exports = { getAllDepartments, getDepartment, getSalaryBudget, createDepartment, deleteDepartment };
+module.exports = { getAllDepartments, getDepartment, getSalaryBudget, createDepartment, updateDepartment, deleteDepartment };
