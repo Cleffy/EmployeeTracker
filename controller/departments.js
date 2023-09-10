@@ -104,7 +104,7 @@ async function updateDepartment(name, id){
             console.log('No department id defined.');
             return;
         }
-        const [result] = await dataPool.query(`
+        await dataPool.query(`
             UPDATE departments
             SET department_name = "?"
             WHERE id = ?

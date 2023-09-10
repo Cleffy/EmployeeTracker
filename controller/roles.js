@@ -75,29 +75,29 @@ async function createRole(title, salary, department_id){
  */
 async function updateRole(title, salary, department_id, id){
     try{
-        if(id = undefined){
+        if(id === undefined){
             console.log('No role id defined.');
             return;
         }
         const role = getRole(id);
-        if(title = undefined){
+        if(title === undefined){
             title = role.title;
         }
-        if(salary = undefined){
+        if(salary === undefined){
             salary = role.salary;
         }
-        if(department_id = undefined){
+        if(department_id === undefined){
             department_id = role.department_id;
         }
-        const [result] = await dataPool.query(`
+        await dataPool.query(`
             UPDATE roles
             SET
                 title = ?,
                 salary = ?,
-                department_id = ?,
+                department_id = ?
             WHERE id = ?
             ;`, [title, salary, department_id, id]);
-        const updatedObject = getRole(result.insertId);
+        const updatedObject = await getRole(id);
         console.log(updatedObject);
         return updatedObject;
     }

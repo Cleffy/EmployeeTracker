@@ -99,33 +99,33 @@ async function createEmployee(first_name, last_name, role_id, manager_id){
  */
 async function updateEmployee(first_name, last_name, role_id, manager_id, id){
     try{
-        if(id = undefined){
+        if(id === undefined){
             console.log('No employee id defined.');
             return;
         }
-        const employee = getEmployee(id);
-        if(first_name = undefined){
+        const employee = await getEmployee(id);
+        if(first_name === undefined){
             first_name = employee.first_name;
         }
-        if(last_name = undefined){
+        if(last_name === undefined){
             last_name = employee.last_name;
         }
-        if(role_id = undefined){
+        if(role_id === undefined){
             role_id = employee.role_id;
         }
-        if(manager_id = undefined){
+        if(manager_id === undefined){
             manager_id = employee.manager_id;
         }
-        const [result] = await dataPool.query(`
+        await dataPool.query(`
             UPDATE employees
             SET
-                first_name = ?,
-                last_name = ?,
+                first_name = "?",
+                last_name = "?",
                 role_id = ?,
-                manager_id = ?,
+                manager_id = ?
             WHERE id = ?
             ;`, [first_name, last_name, role_id, manager_id, id]);
-        const updatedObject = getEmployee(result.insertId);
+        const updatedObject = await getEmployee(id);
         console.log(updatedObject);
         return updatedObject;
     }
