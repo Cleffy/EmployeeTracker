@@ -1,21 +1,21 @@
 const router = require('express').Router();
-const db = require('../database').databaseConnection;
+const {
+    getAllDepartments,
+    getSalaryBudget, 
+    createDepartment,
+    deleteDepartment } = require('../controller/departments');
 
 /**
  * View all departments
  */
 router.get('/', async (request, response) => {
     try{
-        let sql = 'SELECT * FROM departments';
-
-        db.query(sql, (error, result) => {
-            if(error){
-                console.error(error);
-                response.status(500).send({ message: 'Failed to get all departments'});
-            }
-            console.log(result);
-            response.status(200).json(result);
-        });
+        const result = await getAllDepartments();
+        if(!result){
+            response.status(400).json({ message: 'Unable to retrieve departments.' });
+            return;
+        }
+        response.status(200).json(result);
     }
     catch(error){
         response.status(500).json(error);
@@ -26,21 +26,17 @@ router.get('/', async (request, response) => {
  * View the total salary budget
  */
 router.get('/budget/:id', async (request, response) => {
-    let sql = //?????
-        'SELECT COUNT(roles.salary) AS total_salary' + 
-        'FROM employees' + 
-        'JOIN roles' +
-        'ON roles.id = employees.role_id' +
-        `WHERE roles.department_id = ${request.params.id}`;
-
-    db.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to get the total salary budget of the department' });
+    try{
+        const result = await getSalaryBudget(request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to find department ${request.params.id}.` });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: 'Returned the total salary budget of the department' });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
 
 /**
@@ -48,18 +44,12 @@ router.get('/budget/:id', async (request, response) => {
  */
 router.post('/:name', async (request, response) => {
     try{
-        let sql = 
-            'INSERT INTO departments (department_name)' +
-            `VALUES (${request.params.name})`;
-
-        db.query(sql, (error, result) => {
-            if(error){
-                console.error(error);
-                response.status(500).send({ message: 'Failed to add a new department.' });
-            }
-            console.log(result);
-            response.status(200).send({ message: 'Created a new department.' });
-        });
+        const result = await createDepartment(request.params.name);
+        if(!result){
+            response.status(400).json({ message: `Unable to create department ${request.params.name}.` });
+            return;
+        }
+        response.status(201).json(result);
     }
     catch(error){
         response.status(500).json(error);
@@ -71,17 +61,8 @@ router.post('/:name', async (request, response) => {
  */
 router.delete('/:id', async (request, response) => {
     try{
-        let sql = 
-            'DELETE FROM departments' +
-            `WHERE id = ${request.params.id}`;
-
-        db.query(sql, (error, result) => {
-            if(error){
-                console.error(error);
-            }
-            console.log(result);
-            response.status(200).json(result);
-        });
+        await deleteDepartment(request.params.id);
+        response.status(200).json({ message: "Deleted department." });
     }
     catch(error){
         response.status(500).json(error);

@@ -3,3 +3,9 @@ https://andrew-lundy.medium.com/using-mysql-with-express-routes-f607ee9106d8#:~:
 https://expressjs.com/
 
 https://www.npmjs.com/package//inquirer
+
+w3schools
+
+https://www.youtube.com/watch?v=Hej48pi_lOc
+
+https://www.youtube.com/watch?v=344Zv2m9TYI
