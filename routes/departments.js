@@ -62,11 +62,15 @@ router.get('/budget/:id', async (request, response) => {
 
 /**
  * Add a department
- * @param {INT} name - Name of the new department
+ * @body JSON Object
+ * {
+ *  "name": {STRING}
+ * }
  */
-router.post('/:name', async (request, response) => {
+router.post('/', async (request, response) => {
     try{
-        const result = await createDepartment(request.params.name);
+        const { name } = request.body;
+        const result = await createDepartment(name);
         if(!result){
             response.status(400).json({ message: `Unable to create department ${request.params.name}.` });
             return;
@@ -88,7 +92,7 @@ router.post('/:name', async (request, response) => {
  */
 router.put('/:id', async (request, response) => {
     try{
-        const {name} = request.body;
+        const { name } = request.body;
         const result = await updateDepartment(name, request.params.id);
         if(!result){
             response.status(400).json({ message: `Unable to update department ${request.params.id}.` });

@@ -72,7 +72,7 @@ router.get('/manager/:id', async (request, response) => {
  */
 router.post('/', async (request, response) => {
     try{
-        const {first_name, last_name, role_id, manager_id} = request.body;
+        const { first_name, last_name, role_id, manager_id } = request.body;
         const result = await createEmployee(first_name, last_name, role_id, manager_id);
         if(!result){
             response.status(400).json({ message: `Unable to add employee ${first_name}, ${last_name}.` });
@@ -98,7 +98,7 @@ router.post('/', async (request, response) => {
  */
 router.put('/:id', async (request, response) => {
     try{
-        const {first_name, last_name, role_id, manager_id} = request.body;
+        const { first_name, last_name, role_id, manager_id } = request.body;
         const result = await updateEmployee(first_name, last_name, role_id, manager_id, request.params.id);
         if(!result){
             response.status(400).json({ message: `Unable to update employee ${request.params.id}.` });

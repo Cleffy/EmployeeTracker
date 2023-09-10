@@ -52,7 +52,7 @@ router.get('/:id', async (request, response) => {
  */
 router.post('/', async (request, response) => {
     try{
-        const {title, salary, department_id} = request.body;
+        const { title, salary, department_id } = request.body;
         const result = await createRole(title, salary, department_id);
         if(!result){
             response.status(400).json({ message: `Unable to create role ${title}.` });
@@ -77,7 +77,7 @@ router.post('/', async (request, response) => {
  */
 router.put('/:id', async (request, response) => {
     try{
-        const {title, salary, department_id} = request.body;
+        const { title, salary, department_id } = request.body;
         const result = await updateRole(title, salary, department_id, request.params.id);
         if(!result){
             response.status(400).json({ message: `Unable to update role ${request.params.id}.` });

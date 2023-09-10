@@ -1,6 +1,4 @@
-const inquirer = require('inquirer');
-require('dotenv').config();
-const URL = `http://${process.env.DB_HOST}:${process.env.PORT}`;
+
 
 console.log(
     '////////////////////\n' +
@@ -59,41 +57,7 @@ async function manageDepartment(){
         await addDepartment();
     }
 }
-async function selectDepartmentTask(){
-    return await inquirer.prompt([
-        {
-            type: 'list',
-            name: 'task',
-            message: "How would you like to manage the departments?",
-            choices: [
-                {
-                    name: "View all departments",
-                    value: "view"
-                },
-                {
-                    name: "See a departments salary budget",
-                    value: "budget"
-                },
-                {
-                    name: "Add a department",
-                    value: "add"
-                },
-                {
-                    name: "Delete a department",
-                    value: "delete"
-                },
-                {
-                    name: "Back",
-                    value: "back"
-                },
-                {
-                    name: "Exit",
-                    value: "exit"
-                }
-            ]
-        }
-    ]);
-}
+
 async function getAllDepartments(){
     return await fetch(URL + '/departments', {method: 'GET'});
 }
