@@ -2,13 +2,34 @@ const dataPool = require('../database');
 
 /**
  * getAllDepartments
- * @returns all departments
+ * @returns - All departments
  * 
- * Gets all the departments.
+ * Queries the mySQL pool for all departments.
  */
 async function getAllDepartments(){
     try{
-        const [result] = await dataPool.query('SELECT * FROM departments');
+        const [result] = await dataPool.query('SELECT * FROM departments;');
+        console.log(result);
+        return result;
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+
+/**
+ * getDepartment
+ * @param {INT} id - ID of the department
+ * @returns - A department
+ * 
+ * Queries the mySQL pool for a department.
+ */
+async function getDepartment(id){
+    try{
+        const [result] = await dataPool.query(`
+            SELECT * FROM departments
+            WHERE id = ?
+            ;`, [id]);
         console.log(result);
         return result;
     }
@@ -19,10 +40,11 @@ async function getAllDepartments(){
 
 /**
  * getSalaryBudget
- * @param {*} id 
- * @returns the sum of the salaries of all employees within a department
+ * @param {INT} id - ID of the department
+ * @returns - The sum of the salaries of all employees within a department
  * 
- * Gets the total budget on employee salaries within a department.
+ * Queries the mySQL pool for all employees within a department.
+ * Checks each employees salary and adds them together.
  */
 async function getSalaryBudget(id){
     try{
@@ -32,7 +54,7 @@ async function getSalaryBudget(id){
             JOIN roles
             ON roles.id = employees.role_id
             WHERE roles.department_id = ?
-            `, [id]);
+            ;`, [id]);
         console.log(result);
         return result;
     }
@@ -43,21 +65,18 @@ async function getSalaryBudget(id){
 
 /**
  * createDepartment
- * @param {*} name 
- * @returns an object representing the new department
+ * @param {STRING} name - Name of the new department
+ * @returns - The created department
  * 
- * Creates a department.
+ * Inserts a department.
  */
 async function createDepartment(name){
     try{
         const [result] = await db.query(`
             INSERT INTO departments (department_name)
             VALUES (?)
-            `, [name]);
-        const createdObject = {
-            id: result.insertId,
-            department_name: name
-        }
+            ;`, [name]);
+        const createdObject = getDepartment(result.insertId);
         console.log(createdObject);
         return createdObject;
     }
@@ -68,20 +87,28 @@ async function createDepartment(name){
 
 /**
  * deleteDepartment
- * @param {*} id 
+ * @param {INT} id - ID of the department
+ * @returns - The deleted department
  * 
  * Deletes a department.
  */
 async function deleteDepartment(id){
     try{
-        db.query(`DELETE FROM departments
-            WHERE id = $
-            `, [id]);
-        console.log('Deleted department.');
+        const deletedObject = getDepartment(id);
+        if(!deletedObject){
+            console.log('Unable to get department');
+            return;
+        }
+        await db.query(`
+            DELETE FROM departments
+            WHERE id = ?
+            ;`, [id]);
+        console.log(deletedObject);
+        return deletedObject;
     }
     catch(error){
         console.error(error);
     }
 }
 
-module.exports = { getAllDepartments, getSalaryBudget, createDepartment, deleteDepartment };
+module.exports = { getAllDepartments, getDepartment, getSalaryBudget, createDepartment, deleteDepartment };

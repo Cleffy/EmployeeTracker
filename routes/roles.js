@@ -1,60 +1,86 @@
 const router = require('express').Router();
-const connection = require('../database').databaseConnection;
+const {
+    getAllRoles,
+    getRole,
+    createRole,
+    deleteRole } = require('../controller/roles')
 
 /**
  * View all roles
  */
-router.get('/', (request, response) => {
-    let sql = 'SELECT * FROM roles';
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to get all roles'});
+router.get('/', async (request, response) => {
+    try{
+        const result = await getAllRoles();
+        if(!result){
+            response.status(400).json({ message: 'Unable to retrieve roles.' });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: 'Returned all roles' });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
+});
+
+/**
+ * View a role
+ * @param {INT} - ID of the role
+ */
+router.get('/:id', async (request, response) => {
+    try{
+        const result = await getRole(request.params.id);
+        if(!result){
+            response.status(400).json({ message: 'Unable to retrieve role.' });
+            return;
+        }
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
 
 /**
  * Add a role
+ * @body JSON Object
+ * {
+ *  title: {STRING}
+ *  salary: {DECIMAL}
+ *  department_id: {INT}
+ * }
  */
-router.post('/', (request, response) => {
-    let sql = 
-        'INSERT INTO roles (title, salary, department_id)' +
-        `VALUES (
-            ${request.body.title}, 
-            ${request.body.salary}, 
-            ${request.body.department_id})`;
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to add a new role.' });
+router.post('/', async (request, response) => {
+    try{
+        const {title, salary, department_id} = request.body;
+        const result = await createRole(title, salary, department_id);
+        if(!result){
+            response.status(400).json({ message: `Unable to create role ${title}.` });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: 'Created a new role.' });
-    });
+        response.status(201).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
 
 
 /**
  * Delete a role
+ * @param {INT} id - ID of the role
  */
-router.delete('/:id', (request, response) => {
-    let sql = 
-        'DELETE FROM employees' +
-        `WHERE id = ${request.params.id}`;
-
-    connection.query(sql, (error, result) => {
-        if(error){
-            console.error(error);
-            response.status(500).send({ message: 'Failed to delete a role.' });
+router.delete('/:id', async (request, response) => {
+    try{
+        const result = await deleteRole(request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to delete role ${request.params.id}.` });
+            return;
         }
-        console.log(result);
-        response.status(200).send({ message: 'Deleted a role.' });
-    });
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
 });
 
 module.exports = router;
