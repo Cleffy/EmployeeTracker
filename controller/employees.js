@@ -31,6 +31,29 @@ async function getEmployee(id){
             SELECT * FROM employees
             WHERE id = ?
             ;`, [id]);
+        //console.log(result);
+        return result;
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+
+/**
+ * getAllManagers
+ * @returns - All managers
+ * 
+ * Queries the mySQL pool for all employees with a manager or owner role
+ */
+async function getAllManagers(){
+    try{
+        const [result] = await dataPool.query(`
+            SELECT * 
+            FROM roles 
+            JOIN employees 
+            ON employees.role_id = roles.id
+            WHERE roles.title = ? || roles.title = ?
+            ;`, ['Manager', 'Owner']);
         console.log(result);
         return result;
     }
@@ -51,6 +74,30 @@ async function getManagersEmployees(id){
         const [result] = await dataPool.query(`
             SELECT * FROM employees
             WHERE manager_id = ?
+            ;`, [id]);
+        console.log(result);
+        return result;
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+
+/**
+ * getDepartmentsEmployees
+ * @param {INT} id - ID of the department
+ * @returns - All the employees in a department
+ * 
+ * Queries the mySQL pool for all employees in a department.
+ */
+async function getDepartmentsEmployees(id){
+    try{
+        const [result] = await dataPool.query(`
+            SELECT *
+            FROM employees
+            JOIN roles
+            ON employees.role_id = roles.id
+            WHERE roles.department_id = ?
             ;`, [id]);
         console.log(result);
         return result;
@@ -160,4 +207,4 @@ async function deleteEmployee(id){
     }
 }
 
-module.exports = { getAllEmployees, getEmployee, getManagersEmployees, createEmployee, updateEmployee, deleteEmployee };
+module.exports = { getAllEmployees, getEmployee, getAllManagers, getManagersEmployees, getDepartmentsEmployees, createEmployee, updateEmployee, deleteEmployee };

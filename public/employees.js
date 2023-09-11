@@ -106,11 +106,16 @@ async function displayEmployeeMenu(){
  */
 async function viewAllEmployees(){
     try{
-        let employees = await getAllEmployees();
-        for(let employee of employees){
-            employee = await formatEmployee(employee);
+        const employees = await getAllEmployees();
+        if(employees === 'employeeMenu' || employees === 'mainMenu' || employees === 'exit'){
+            return Promise.resolve(employees);
         }
-        console.log(buildTable(employees));
+
+        let formattedEmployees = new Array();
+        for(const employee of employees){
+            formattedEmployees.push(await formatEmployee(employee));
+        }
+        console.log(buildTable(formattedEmployees));
         return await finishedTask();
     }
     catch(error){
@@ -127,11 +132,16 @@ async function viewAllEmployees(){
  */
 async function viewManagerEmployees(){
     try{
-        let employees = await getManagerEmployees();
-        for(let employee of employees){
-            employee = await formatEmployee(employee);
+        const employees = await getManagerEmployees();
+        if(employees === 'employeeMenu' || employees === 'mainMenu' || employees === 'exit'){
+            return Promise.resolve(employees);
         }
-        console.log(buildTable(employees));
+
+        let formattedEmployees = new Array();
+        for(const employee of employees){
+            formattedEmployees.push(await formatEmployee(employee));
+        }
+        console.log(buildTable(formattedEmployees));
         return await finishedTask();
     }
     catch(error){
@@ -148,11 +158,16 @@ async function viewManagerEmployees(){
  */
 async function viewDepartmentEmployees(){
     try{
-        let employees = await getDepartmentEmployees();
-        for(let employee of employees){
-            employee = await formatEmployee(employee);
+        const employees = await getDepartmentEmployees();
+        if(employees === 'employeeMenu' || employees === 'mainMenu' || employees === 'exit'){
+            return Promise.resolve(employees);
         }
-        console.log(buildTable(employees));
+
+        let formattedEmployees = new Array();
+        for(const employee of employees){
+            formattedEmployees.push(await formatEmployee(employee));
+        }
+        console.log(buildTable(formattedEmployees));
         return await finishedTask();
     }
     catch(error){
@@ -170,24 +185,24 @@ async function viewDepartmentEmployees(){
  */
 function buildTable(values){
     let header = 
-        ` ${'Name'.padEnd(30)} |` +
-        ` ${'Department'.padEnd(30)} |` +
-        ` ${'Role'.padEnd(30)} |` +
-        ` ${'Salary'.padEnd(15)} |` + 
-        ` ${'Manager'.padEnd(30)}\n` +
-        ` ${''.padEnd(30,'-')} +` +
-        ` ${''.padEnd(30,'-')} +` +
-        ` ${''.padEnd(30,'-')} +` +
-        ` ${''.padEnd(15,'-')} +` +
-        ` ${''.padEnd(30,'-')}\n`;
+        ` ${'Name'.padEnd(18)} |` +
+        ` ${'Department'.padEnd(18)} |` +
+        ` ${'Role'.padEnd(26)} |` +
+        ` ${'Salary'.padEnd(12)} |` + 
+        ` ${'Manager'.padEnd(18)}\n` +
+        ` ${''.padEnd(18,'-')} +` +
+        ` ${''.padEnd(18,'-')} +` +
+        ` ${''.padEnd(26,'-')} +` +
+        ` ${''.padEnd(12,'-')} +` +
+        ` ${''.padEnd(18,'-')}\n`;
     let body = '';
     for(const value of values){
         body +=
-            ` ${value.name.padEnd(30)} |` +
-            ` ${value.department.padEnd(30)} |` +
-            ` ${value.role.padEnd(30)} |` +
-            ` ${value.salary.padStart(15)} |` +
-            ` ${value.manager.padEnd(30)} \n`;
+            ` ${value.name.padEnd(18)} |` +
+            ` ${value.department.padEnd(18)} |` +
+            ` ${value.role.padEnd(26)} |` +
+            ` ${value.salary.padStart(12)} |` +
+            ` ${value.manager.padEnd(18)} \n`;
     }
     return header + body;
 }
@@ -431,7 +446,6 @@ async function getManagerEmployees(){
         if(manager === 'employeeMenu' || manager === 'mainMenu' || manager === 'exit'){
             return Promise.resolve(manager);
         }
-
         const response = await fetch(URL + '/employees/manager/' + manager.id, { method: 'GET' });
         return await response.json();
     }
@@ -474,7 +488,7 @@ async function getDepartmentEmployees(){
  */
 async function getEmployee(id){
     try{
-        const response = await fetch(URL + '/roles/' + id, { method: 'GET' });
+        const response = await fetch(URL + '/employees/id/' + id, { method: 'GET' });
         const [employee] = await response.json();
         return Promise.resolve(employee);
     }
@@ -517,7 +531,7 @@ async function getBody(){
         const body = {
             first_name: firstName,
             last_name: lastName,
-            role_id = role.id,
+            role_id: role.id,
             manager_id: manager.id
         };
         return Promise.resolve(body);
@@ -541,9 +555,14 @@ async function getBody(){
 async function formatEmployee(employee){
     try{
         const manager = await getEmployee(employee.manager_id);
+        let managerName = '';
+        if(manager != null){
+            managerName = `${manager.first_name} ${manager.last_name}`;
+        }
         const role = await getRole(employee.role_id);
         const department = await getDepartment(role.department_id);
-        return Promise.resolve({
+        const revisedEmployee =
+        {
             id: employee.id,
             name: `${employee.first_name} ${employee.last_name}`,
             department: department.department_name,
@@ -551,8 +570,9 @@ async function formatEmployee(employee){
             salary: "$ " + parseFloat(role.salary).toLocaleString(
                 'en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}
                 ),
-            manager: `${manager.first_name} ${manager.last_name}`
-        });
+            manager: managerName
+        }
+        return Promise.resolve(revisedEmployee);
     }
     catch(error){
         console.error(error);

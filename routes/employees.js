@@ -1,10 +1,12 @@
 const router = require('express').Router();
-const {
-    getAllEmployees,
-    getEmployee,
-    getManagersEmployees,
-    createEmployee,
-    updateEmployee,
+const { 
+    getAllEmployees, 
+    getEmployee, 
+    getAllManagers, 
+    getManagersEmployees, 
+    getDepartmentsEmployees, 
+    createEmployee, 
+    updateEmployee, 
     deleteEmployee } = require('../controller/employees')
 
 /**
@@ -28,11 +30,28 @@ router.get('/', async (request, response) => {
  * View an employee
  * @param {INT} - ID of the employee
  */
-router.get('/:id', async (request, response) => {
+router.get('/id/:id', async (request, response) => {
     try{
         const result = await getEmployee(request.params.id);
         if(!result){
             response.status(400).json({ message: 'Unable to retrieve employee.' });
+            return;
+        }
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
+});
+
+/**
+ * View all managers
+ */
+router.get('/manager', async (request, response) => {
+    try{
+        const result = await getAllManagers();
+        if(!result){
+            response.status(400).json({ message: `Unable to retrieve managers.` });
             return;
         }
         response.status(200).json(result);
@@ -51,6 +70,24 @@ router.get('/manager/:id', async (request, response) => {
         const result = await getManagersEmployees(request.params.id);
         if(!result){
             response.status(400).json({ message: `Unable to retrieve employees under manager ${request.params.id}.` });
+            return;
+        }
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(500).json(error);
+    }
+});
+
+/**
+ * View all employees in a department
+ * @param {INT} - ID of the department
+ */
+router.get('/department/:id', async (request, response) => {
+    try{
+        const result = await getDepartmentsEmployees(request.params.id);
+        if(!result){
+            response.status(400).json({ message: `Unable to retrieve employees in department ${request.params.id}.` });
             return;
         }
         response.status(200).json(result);
