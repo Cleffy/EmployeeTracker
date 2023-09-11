@@ -4,7 +4,7 @@ const {
     getRole,
     createRole,
     updateRole,
-    deleteRole } = require('../controller/roles')
+    deleteRole } = require('../controller/roles');
 
 /**
  * View all roles

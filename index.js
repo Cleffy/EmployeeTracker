@@ -7,6 +7,13 @@ const {
     addDepartment, 
     updateDepartment, 
     deleteDepartment } = require('./public/departments');
+const { 
+    displayRoleMenu, 
+    viewAllRoles, 
+    viewRole, 
+    addRole, 
+    updateRole, 
+    deleteRole } = require('./public/roles');
 
 let running = true;
 let state = 0;
@@ -20,28 +27,48 @@ console.log(
 async function stateControl(){
     switch(state){
         // Main Menu
-        case 0:
+        case 'mainMenu':
             state = await displayMainMenu();
             break;
         
         // Department States
-        case 1:
+        case 'departmentMenu':
             state = await displayDepartmentMenu();
             break;
-        case 2:
+        case 'viewDepartments':
             state = await viewAllDepartments();
             break;
-        case 3:
+        case 'viewDepartmentSalaryBudget':
             state = await viewDepartmentBudgetSalary();
             break;
-        case 4:
+        case 'addDepartment':
             state = await addDepartment();
             break;
-        case 5:
+        case 'updateDepartment':
             state = await updateDepartment();
             break;
-        case 6:
+        case 'deleteDepartment':
             state = await deleteDepartment();
+            break;
+
+        // Role States
+        case 'roleMenu':
+            state = await displayRoleMenu();
+            break;
+        case 'viewRoles':
+            state = await viewAllRoles();
+            break;
+        case 'viewRole':
+            state = await viewRole();
+            break;
+        case 'addRole':
+            state = await addRole();
+            break;
+        case 'updateRole':
+            state = await updateRole();
+            break;
+        case 'deleteRole':
+            state = await deleteRole();
             break;
 
         case 'exit':

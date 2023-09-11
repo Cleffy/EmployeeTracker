@@ -15,15 +15,15 @@ async function displayMainMenu(){
             choices: [
                 {
                     name: "Manage departments",
-                    value: 1
+                    value: 'departmentMenu'
                 },
                 {
                     name: "Manage roles",
-                    value: 0
+                    value: 'roleMenu'
                 },
                 {
                     name: "Manage employees",
-                    value: 0
+                    value: 'employeeMenu'
                 },
                 {
                     name: "Exit",
