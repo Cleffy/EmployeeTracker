@@ -205,10 +205,12 @@ async function updateRole(){
  */
 async function deleteRole(){
     try{
-        const role = await pickRole();
-        if(role === 'roleMenu' || role === 'mainMenu' || role === 'exit'){
-            return Promise.resolve(role);
+        const result = await pickRole();
+        if(result === 'roleMenu' || result === 'mainMenu' || result === 'exit'){
+            return Promise.resolve(result);
         }
+        const response = await fetch(URL + '/roles/' + result.id, {method: 'DELETE'});
+        const [role] = await response.json();
         console.log( "Deleted role: " + role.title);
         return await finishedTask();
     }

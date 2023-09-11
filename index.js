@@ -16,7 +16,7 @@ const {
     deleteRole } = require('./public/roles');
 
 let running = true;
-let state = 0;
+let state = 'mainMenu';
 
 console.log(
     '////////////////////\n' +

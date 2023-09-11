@@ -45,7 +45,7 @@ async function displayDepartmentMenu(){
             {
                 type: 'list',
                 name: 'task',
-                message: "How would you like to manage in departments?",
+                message: "What would you like to manage in departments?",
                 choices: [
                     {
                         name: "View all departments",
@@ -66,10 +66,6 @@ async function displayDepartmentMenu(){
                     {
                         name: "Delete a department",
                         value: 'deleteDepartment'
-                    },
-                    {
-                        name: "Back",
-                        value: 'mainMenu'
                     },
                     {
                         name: "Return to Main Menu",
@@ -99,9 +95,7 @@ async function displayDepartmentMenu(){
 async function viewAllDepartments(){
     try{
         const departments = await getAllDepartments();
-        for(let department of departments){
-            console.log(department.department_name);
-        }
+        console.table(departments);
         return await finishedTask();
     }
     catch(error){
@@ -144,7 +138,7 @@ async function viewDepartmentBudgetSalary(){
  * @returns - Next state
  * 
  * Asks the user to pick a name.
- * Adds the department to the database.
+ * Adds the department to the backend.
  * Asks the user what they want to do next.
  */
 async function addDepartment(){
@@ -176,7 +170,7 @@ async function addDepartment(){
  * 
  * Asks the user to pick a department.
  * Asks the user to pick a name.
- * Updates the department in the databse.
+ * Updates the department in the backend.
  * Asks the user what they want to do next.
  */
 async function updateDepartment(){
@@ -211,15 +205,17 @@ async function updateDepartment(){
  * @returns - Next state
  * 
  * Asks the user to pick a department.
- * Deletes the department in the databse.
+ * Deletes the department in the backend.
  * Asks the user what they want to do next.
  */
 async function deleteDepartment(){
     try{
-        const department = await pickDepartment();
-        if(department === 'departmentMenu' || department === 'mainMenu' || department === 'exit'){
-            return Promise.resolve(department);
+        const result = await pickDepartment();
+        if(result === 'departmentMenu' || result === 'mainMenu' || result === 'exit'){
+            return Promise.resolve(result);
         }
+        const response = await fetch(URL + '/departments/' + result.id, {method: 'DELETE'});
+        const [department] = await response.json();
         console.log( "Deleted department: " + department.department_name);
         return await finishedTask();
     }
@@ -267,7 +263,7 @@ async function pickDepartment(){
             }
         ]);
         const task = result.task;
-        if(result.task === 'departmentMenu' || result.task === 'mainMenu' || result.task === 'exit'){
+        if(task === 'departmentMenu' || task === 'mainMenu' || task === 'exit'){
             return Promise.resolve(task);
         }
         return await getDepartment(task);
@@ -330,7 +326,7 @@ async function getName(){
                 type: 'input',
                 name: 'name',
                 message: 
-                    "What's the name of the new department?\n" +
+                    "What's the name of the department?\n" +
                     "** Must be between 3 to 30 characters. **"
             }
         ]);
@@ -368,7 +364,7 @@ async function finishedTask(){
             {
                 type: 'list',
                 name: 'task',
-                message: "What addition task do you want to do?",
+                message: "What task do you want to do next?",
                 choices: [
                     {
                         name: "Back",
