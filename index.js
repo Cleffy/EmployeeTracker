@@ -15,6 +15,15 @@ const {
     updateRole, 
     deleteRole } = require('./public/roles');
 
+const { 
+    displayEmployeeMenu, 
+    viewAllEmployees, 
+    viewManagerEmployees, 
+    viewDepartmentEmployees, 
+    addEmployee, 
+    updateEmployee, 
+    deleteEmployee } = require('./public/employees')
+
 let running = true;
 let state = 'mainMenu';
 
@@ -24,6 +33,9 @@ console.log(
     '////////////////////\n'
 );
 
+/**
+ * Continuously runs until the user exits.
+ */
 async function stateControl(){
     switch(state){
         // Main Menu
@@ -70,6 +82,29 @@ async function stateControl(){
         case 'deleteRole':
             state = await deleteRole();
             break;
+            
+        // Employee States
+        case 'employeeMenu':
+            state = await displayEmployeeMenu();
+            break;
+        case 'viewEmployees':
+            state = await viewAllEmployees();
+            break;
+        case 'viewManagerEmployees':
+            state = await viewManagerEmployees();
+            break;
+        case 'viewDepartmentEmployees':
+            state = await viewDepartmentEmployees();
+            break;
+        case 'addEmployee':
+            state = await addEmployee();
+            break;
+        case 'updateEmployee':
+            state = await updateEmployee();
+            break;
+        case 'deleteEmployee':
+            state = await deleteEmployee();
+            break;
 
         case 'exit':
             running = false;
@@ -81,7 +116,9 @@ async function stateControl(){
     if(running){
         await stateControl();
     }
+    else{
+        console.log('Exiting');
+    }
 }
 
 stateControl();
-console.log('Exiting');

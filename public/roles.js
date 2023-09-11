@@ -26,7 +26,7 @@
  *   >  Back
  *   >  Return to Main Menu
  *   >  Exit
- * >  Back
+ * >  Return to Main Menu
  * >  Exit
  */
 
@@ -97,7 +97,7 @@ async function displayRoleMenu(){
 async function viewAllRoles(){
     try{
         let roles = await getAllRoles();
-        for(role of roles){
+        for(let role of roles){
             role = await formatRole(role);
         }
         console.log(buildTable(roles));
@@ -512,4 +512,4 @@ async function finishedTask(){
     }
 }
 
-module.exports = { displayRoleMenu, viewAllRoles, viewRole, addRole, updateRole, deleteRole, pickRole };
+module.exports = { displayRoleMenu, viewAllRoles, viewRole, addRole, updateRole, deleteRole, pickRole, getRole };
