@@ -95,7 +95,7 @@ async function displayDepartmentMenu(){
 async function viewAllDepartments(){
     try{
         const departments = await getAllDepartments();
-        console.table(departments);
+        console.log(buildTable(departments));
         return await finishedTask();
     }
     catch(error){
@@ -131,6 +131,27 @@ async function viewDepartmentBudgetSalary(){
     catch(error){
         console.error(error);
     }
+}
+
+/**
+ * buildTable
+ * @param {array} values 
+ * @returns String of what is to be printed on console.
+ * 
+ * Makes a header
+ * For each value it adds it to the body
+ */
+function buildTable(values){
+    let header = 
+        ` ${'ID'.padEnd(4)} | ${'Department'.padEnd(30)}\n` + 
+        ` ${''.padEnd(4,'-')} + ${''.padEnd(30,'-')}\n`;
+    let body = '';
+    for(const value of values){
+        body +=
+            ` ${String(value.id).padEnd(4)} |` +
+            ` ${value.department_name.padEnd(30)}\n`
+    }
+    return header + body;
 }
 
 /**

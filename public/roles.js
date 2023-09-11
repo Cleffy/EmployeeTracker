@@ -100,7 +100,7 @@ async function viewAllRoles(){
         for(role of roles){
             role = await formatRole(role);
         }
-        console.table(roles);
+        console.log(buildTable(roles));
         return await finishedTask();
     }
     catch(error){
@@ -120,12 +120,34 @@ async function viewRole(){
     try{
         let role = await pickRole();
         role = await formatRole(role);
-        console.table(role);
+        console.log(buildTable([role]));
         return await finishedTask();
     }
     catch(error){
         console.error(error);
     }
+}
+
+/**
+ * buildTable
+ * @param {array} values 
+ * @returns String of what is to be printed on console.
+ * 
+ * Makes a header
+ * For each value it adds it to the body
+ */
+function buildTable(values){
+    let header = 
+        ` ${'Department'.padEnd(30)} | ${'Title'.padEnd(30)} | ${'Salary'.padEnd(15)}\n` + 
+        ` ${''.padEnd(30,'-')} + ${''.padEnd(30,'-')} + ${''.padEnd(15,'-')}\n`;
+    let body = '';
+    for(const value of values){
+        body +=
+            ` ${value.department.padEnd(30)} |` +
+            ` ${value.title.padEnd(30)} |` +
+            ` ${value.salary.padStart(15)} \n`
+    }
+    return header + body;
 }
 
 /**
@@ -232,7 +254,7 @@ async function pickRole(){
         const roles = await getAllRoles();
         const selection = new Array();
         for(let role of roles){
-            role = formatRole(role);
+            role = await formatRole(role);
             let name = `${role.department} - ${role.title}`;
             selection.push({
                 name: name,
@@ -351,12 +373,16 @@ async function getBody(){
  * 
  * Finds the department's name.
  * Replaces department_id for the name of the department.
+ * Changes how salary is displayed.
  */
 async function formatRole(role){
     try{
         const department = await getDepartment(role.department_id);
         delete role.department_id;
         role.department = department.department_name;
+        role.salary = "$ " + parseFloat(role.salary).toLocaleString(
+            'en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}
+            )
         return Promise.resolve(role);
     }
     catch(error){
@@ -439,7 +465,7 @@ async function getSalary(){
             return Promise.resolve('exit');
         }
         const salary = parseFloat(result.salary);
-        if(salary === NaN){
+        if(isNaN(salary)){
             console.log("Didn't enter a number.")
             return await getSalary();
         }
