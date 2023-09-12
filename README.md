@@ -8,6 +8,9 @@
   [Contact](#Contact)  
   [References](#References)  
   ## <div id="Installation">Installation</div>
+
+[![Employee Tracker How-to Video](https://img.youtube.com/vi/u-nIZI6nHyI/maxresdefault.jpg)](https://youtu.be/u-nIZI6nHyI)
+
   * Run npm install
   * Open a mysql terminal
   * Run source db/schema.sql
